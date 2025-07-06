@@ -1,0 +1,10 @@
+flask
+flask-cors
+python-dotenv
+langchain
+langchain-groq
+chromadb
+sentence-transformers
+transformers
+torch
+regex

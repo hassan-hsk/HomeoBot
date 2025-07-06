@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homeopathic AI Doctor</title>
+    <style>
+        body { font-family: Arial; background: #f9f9f9; padding: 20px; }
+        .chat-box { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .message { margin-bottom: 10px; }
+        .user { font-weight: bold; color: blue; }
+        .bot { font-weight: bold; color: green; }
+        input[type="text"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-top: 10px; }
+        button { margin-top: 10px; padding: 10px 20px; border: none; background: #28a745; color: white; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="chat-box">
+        <h2>🤖 Homeopathic AI Doctor</h2>
+        <div id="chat"></div>
+        <input type="text" id="userInput" placeholder="Describe your symptoms or type 'reset'...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        const sessionId = Math.random().toString(36).substring(7);
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const msg = input.value;
+            if (!msg.trim()) return;
+
+            appendMessage('User', msg);
+            input.value = '';
+
+            fetch('http://localhost:5000/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ session_id: sessionId, message: msg })
+            })
+            .then(res => res.json())
+            .then(data => {
+                appendMessage('Bot', data.response);
+            });
+        }
+
+        function appendMessage(sender, message) {
+            const chat = document.getElementById('chat');
+            const div = document.createElement('div');
+            div.className = 'message';
+            div.innerHTML = `<span class="${sender.toLowerCase()}">${sender}:</span> ${message}`;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+    </script>
+</body>
+</html>
